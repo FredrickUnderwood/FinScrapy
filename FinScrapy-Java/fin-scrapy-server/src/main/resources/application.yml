@@ -1,0 +1,72 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: FinScrapy
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: ${middleware_server}
+      port: 6379
+      database: 5
+  datasource:
+    url: jdbc:mysql://47.109.43.173:3306/fin_scrapy
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000 # 毫秒
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000 # 毫秒
+      max-lifetime: 1500000 # 毫秒
+      validation-timeout: 5000 # 毫秒
+      auto-commit: true
+      connection-test-query: SELECT 1
+  kafka:
+    bootstrap-servers: ${middleware_server}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      auto-commit-interval: 1000
+      enable-auto-commit: true
+
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.chen.entity
+  configuration:
+    map-underscore-to-camel-case: true
+elasticsearch:
+  host: ${middleware_server}
+  port: 9200
+  scheme: http
+  username: elastic
+  password: ${spring.elasticsearch.password}
+fin-scrapy:
+  subscription:
+    tick_range: 15000
+  sources: east_money,ths,ifeng,wall_street_cn
+  sources_chinese: 东方财富,同花顺财经,凤凰财经,华尔街见闻
+  mq:
+    email_subscription_topic_name: fin_scrapy_email_subscription
+    subscription_group_id: fin_scrapy_subscription_group
+    health_check_topic_name: health-check-topic
+jwt:
+  secret: ${jwt.secret}
+  ttl: 7200000
+  header: Authorization
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+fin-scrapy-ai:
+  feign_client:
+    connect_timeout: 300000
+    read_timeout: 300000

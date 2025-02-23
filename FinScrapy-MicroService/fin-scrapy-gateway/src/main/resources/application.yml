@@ -1,0 +1,27 @@
+server:
+  port: 8080  # 网关端口
+
+spring:
+  application:
+    name: api-gateway  # 服务名称
+  cloud:
+    gateway:
+      routes:
+        - id: fin-scrapy-service  # 路由 ID
+          uri: lb://FinScrapy # 目标服务名称（通过 Eureka 发现）
+          predicates:
+            - Path=/fin_scrapy/**  # 匹配路径
+          filters:
+            - StripPrefix=1  # 去掉路径中的第一个前缀
+        - id: fin-scrapy-ai-service
+          uri: lb://FinScrapyAI
+          predicates:
+            - Path=/fin_scrapy_ai/**
+          filters:
+            - StripPrefix=1  # 去掉路径中的第一个前缀
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server 地址

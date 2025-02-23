@@ -1,0 +1,13 @@
+server:
+  port: 8083
+spring:
+  profiles:
+    active: dev
+  application:
+    name: FinScrapyAI
+aliyun:
+  api_key: ${aliyun.api_key}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
