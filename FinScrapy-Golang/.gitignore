@@ -2,3 +2,4 @@ pkg/
 bin/
 .vscode/
 fin-scrapy-spider/config/dev_config.yaml
+.DS_Store
